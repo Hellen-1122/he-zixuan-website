@@ -1,78 +1,178 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>贺子轩的个人主页</title>
-  <style>
-    * { margin: 0; padding: 0; box-sizing: border-box; }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>China's Development</title>
+    <style>
+        /* 基础重置 */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
-    body {
-      min-height: 100vh;
-      display: flex;
-      flex-direction: column;
-      font-family: "Microsoft YaHei", "PingFang SC", sans-serif;
-      background: #ffffff;
-      color: #1a3a6b;
-    }
+        body, html {
+            width: 100%;
+            height: 100%;
+            font-family: 'Georgia', serif; /* 使用衬线字体更显庄重 */
+            overflow: hidden; /* 防止滚动条出现 */
+        }
 
-    /* 顶部 */
-    header {
-      background: #1e6fd9;
-      color: #ffffff;
-      padding: 34px 20px;
-      text-align: center;
-    }
-    header h1 {
-      font-size: 26px;
-      font-weight: 600;
-      letter-spacing: 2px;
-    }
+        /* 主容器：负责背景 */
+        .hero-section {
+            position: relative;
+            width: 100%;
+            height: 100vh;
+            /* 👇 这里替换你的高铁背景图 */
+            background-image: url('https://images.unsplash.com/photo-1541447237128-f5f1e64f5151?q=80&w=2000&auto=format&fit=crop'); 
+            background-size: cover;
+            background-position: center;
+        }
 
-    /* 中间自我介绍 */
-    main {
-      flex: 1;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 48px 24px;
-    }
-    .intro {
-      max-width: 520px;
-      background: #f2f7ff;
-      border-left: 4px solid #1e6fd9;
-      border-radius: 8px;
-      padding: 24px 28px;
-      font-size: 16px;
-      line-height: 2;
-    }
+        /* 背景暗化遮罩，让文字更清晰 */
+        .overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.2); 
+            z-index: 1;
+        }
 
-    /* 底部联系方式 */
-    footer {
-      background: #1e6fd9;
-      color: #e8f2ff;
-      text-align: center;
-      padding: 20px;
-      font-size: 14px;
-      line-height: 1.9;
-    }
-  </style>
+        /* 内容层 */
+        .content {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 2; /* 保证文字在遮罩上方 */
+        }
+
+        /* 主标题 */
+        .main-title {
+            position: absolute;
+            top: 10%;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 5vw;
+            color: #FFD700; /* 金黄色 */
+            /* 模拟原图的文字阴影/描边效果 */
+            text-shadow: 3px 3px 0 #000, -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000;
+            letter-spacing: 2px;
+            white-space: nowrap;
+        }
+
+        /* 副标题 */
+        .sub-title {
+            position: absolute;
+            top: 24%;
+            left: 60%;
+            font-size: 2vw;
+            color: #222;
+            font-weight: bold;
+            text-shadow: 1px 1px 2px rgba(255,255,255,0.8);
+        }
+
+        /* 左侧城市图片 */
+        .img-left {
+            position: absolute;
+            top: 35%;
+            left: 5%;
+            width: 25vw;
+            border: 4px solid #a9c79b; /* 绿色边框 */
+            box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+            z-index: 3;
+        }
+
+        /* 右侧农田图片 */
+        .img-right {
+            position: absolute;
+            top: 55%;
+            right: 5%;
+            width: 25vw;
+            border: 4px solid #e6b85c; /* 黄色边框 */
+            box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+            z-index: 3;
+        }
+
+        /* 左下角长文本 */
+        .bottom-text {
+            position: absolute;
+            bottom: 5%;
+            left: 5%;
+            width: 35vw;
+            font-size: 1.2vw;
+            color: #fff;
+            font-style: italic; /* 斜体 */
+            line-height: 1.6;
+            text-shadow: 1px 1px 4px rgba(0,0,0,0.8);
+        }
+
+        /* 右下角按钮 */
+        .start-btn {
+            position: absolute;
+            bottom: 8%;
+            right: 10%;
+            background-color: #fcfcfc;
+            color: #d99025;
+            font-size: 2vw;
+            font-weight: 900;
+            padding: 10px 40px;
+            /* 使用 clip-path 剪裁出不规则多边形 */
+            clip-path: polygon(10% 0, 100% 0, 90% 100%, 0% 100%);
+            cursor: pointer;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+            transition: transform 0.2s;
+            font-family: Impact, sans-serif;
+            letter-spacing: 2px;
+        }
+
+        .start-btn:hover {
+            transform: scale(1.05); /* 鼠标悬停微动效果 */
+        }
+
+        /* 响应式适配：小屏幕（手机） */
+        @media (max-width: 768px) {
+            .main-title { font-size: 8vw; }
+            .sub-title { font-size: 4vw; top: 20%; left: 50%; }
+            .img-left { width: 40vw; top: 25%; }
+            .img-right { width: 40vw; top: 50%; }
+            .bottom-text { width: 60vw; font-size: 3vw; }
+            .start-btn { font-size: 4vw; padding: 5px 20px; }
+        }
+    </style>
 </head>
 <body>
 
-  <header>
-    <h1>贺子轩的个人主页</h1>
-  </header>
+    <div class="hero-section">
+        <!-- 半透明遮罩层 -->
+        <div class="overlay"></div>
 
-  <main>
-    <p class="intro">
-      大家好，我是贺子轩，一名大一新生。我热爱设计与编程，喜欢把想法变成看得见的作品。希望在设计组里认识更多伙伴，一起学习、一起成长。
-    </p>
-  </main>
+        <div class="content">
+            <!-- 主标题 -->
+            <h1 class="main-title">China's Development</h1>
+            <!-- 副标题 -->
+            <h2 class="sub-title">---THE race and the care</h2>
 
-  <footer>
-    联系方式：邮箱 hezixuan@example.com ｜ 电话 138-0000-0000 ｜ 微信 hezixuan
-  </footer>
+            <!-- 左右两张小图 -->
+            < img class="img-left" src="https://images.unsplash.com/photo-1542856391-010fb87dcfed?q=80&w=600&auto=format&fit=crop" alt="Cityscape">
+            < img class="img-right" src="https://images.unsplash.com/photo-1592982537447-7440770cbfc9?q=80&w=600&auto=format&fit=crop" alt="Agriculture">
+
+            <!-- 左下角说明文字 -->
+            <p class="bottom-text">
+                Development brings convenience, <br>
+                but not everyone can keep pace. <br>
+                Fortunately, China chooses to grow together, <br>
+                leaving no one behind.
+            </p >
+
+            <!-- 右下角按钮 -->
+            <div class="start-btn">START</div>
+        </div>
+    </div>
 
 </body>
 </html>
