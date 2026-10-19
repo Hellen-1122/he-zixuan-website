@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Personal Reflection</title>
+    <style>
+        /* ================= 基础重置 ================= */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background-color: #222;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            font-family: 'Georgia', serif;
+        }
+
+        /* ================= 主画布 ================= */
+        .canvas {
+            position: relative;
+            width: 100%;
+            max-width: 1400px;
+            height: 85vh;
+            max-height: 900px;
+            /* 背景图：城市黄昏，带一点暖色调 */
+            background-image: url('https://images.unsplash.com/photo-1541417904950-b855846fe074?q=80&w=2000&auto=format&fit=crop');
+            background-size: cover;
+            background-position: center;
+            overflow: hidden; 
+            box-shadow: 0 15px 40px rgba(0,0,0,0.4);
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* 背景暗色遮罩，让前景文字更清晰 */
+        .canvas::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background-color: rgba(0, 0, 0, 0.3);
+            z-index: 1;
+        }
+
+        /* ================= 左上角标题区 ================= */
+        .title-area {
+            position: absolute;
+            top: 3%;
+            left: 3%;
+            width: 65%;
+            z-index: 5;
+        }
+
+        /* 顶部厚重大块 */
+        .title-block {
+            position: relative;
+            background-color: rgba(139, 106, 65, 0.85); /* 半透明深棕色 */
+            padding: 2vh 3vw;
+            border-radius: 15px;
+            display: inline-block;
+            /* 用左侧粗边框模拟原图的线条细节 */
+            border-left: 8px solid #e1c58f; 
+            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+        }
+
+        .title-block h1 {
+            font-family: 'Impact', 'Arial Black', sans-serif;
+            font-size: 4vw;
+            color: #000;
+            letter-spacing: 2px;
+            margin: 0;
+        }
+
+        /* 副标题 */
+        .subtitle {
+            margin-top: 1vh;
+            margin-left: 2vw;
+            font-size: 2.2vw;
+            font-weight: bold;
+            color: #111;
+            /* 因为副标题直接压在背景图上，加一层淡淡的黄色文字阴影来保证清晰度 */
+            text-shadow: 1px 1px 0 rgba(255,255,255,0.8);
+            font-family: 'Arial', sans-serif;
+        }
+
+        /* ================= 中间主体内容卡片 ================= */
+        .main-card {
+            position: absolute;
+            top: 25%;
+            left: 15%;
+            right: 5%;
+            bottom: 15%;
+            background-color: rgba(235, 220, 185, 0.85); /* 半透明奶黄色 */
+            /* 稍微给一点大圆角 */
+            border-radius: 30px;
+            padding: 4vh 4vw 4vh 12vw; /* 左侧留出空间给头像和波浪线 */
+            z-index: 3;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+
+        /* 顶部波浪线装饰 (使用 SVG 背景或 CSS 渐变模拟，这里用简单的虚线替代) */
+        .wavy-line-top {
+            position: absolute;
+            top: 4vh;
+            left: 12vw;
+            right: 4vw;
+            height: 6px;
+            background: linear-gradient(90deg, #9d8251 50%, transparent 50%);
+            background-size: 20px 100%;
+        }
+
+        /* 左侧竖向波浪线 */
+        .wavy-line-left {
+            position: absolute;
+            top: 4vh;
+            left: 8vw;
+            bottom: 4vh;
+            width: 6px;
+            background: linear-gradient(0deg, #9d8251 50%, transparent 50%);
+            background-size: 100% 20px;
+        }
+
+        /* 手写风正文内容 */
+        .main-text {
+            font-family: 'Brush Script MT', 'Comic Sans MS', cursive, sans-serif;
+            font-size: 1.6vw;
+            line-height: 1.6;
+            color: #111;
+            font-weight: bold;
+        }
+
+        /* ================= 头像和装饰 ================= */
+        /* 学生头像 */
+        .avatar {
+            position: absolute;
+            top: 22%;
+            left: 3%;
+            width: 12vw;
+            max-width: 160px;
+            border: 6px solid #fff;
+            box-shadow: 5px 5px 15px rgba(0,0,0,0.4);
+            z-index: 6;
+            background-color: #fff;
+            border-radius: 5px;
+        }
+
+        /* 左下角的大头针/装饰圆点 */
+        .deco-dot {
+            position: absolute;
+            bottom: 12%;
+            left: 4%;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            border: 4px solid #a17c46;
+            z-index: 6;
+        }
+        /* 用阴影复制几个圆点 */
+        .deco-dot::after {
+            content: '';
+            position: absolute;
+            top: 40px;
+            left: 0;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            border: 4px solid #a17c46;
+        }
+
+        /* 右下角铅笔图标 (使用 Emoji 或图片代替) */
+        .pencil-icon {
+            position: absolute;
+            bottom: 15%;
+            right: 3%;
+            width: 10vw;
+            max-width: 120px;
+            z-index: 6;
+            transform: rotate(-15deg);
+        }
+
+        /* ================= 底部时间轴栏 ================= */
+        .timeline-bar {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 10%;
+            display: flex;
+            align-items: center;
+            z-index: 5;
+        }
+
+        /* 底部白色粗线 */
+        .timeline-line {
+            position: absolute;
+            left: 6%;
+            right: 0;
+            height: 8px;
+            background-color: rgba(255, 255, 255, 0.9);
+            z-index: 1;
+        }
+
+        /* 右侧箭头 */
+        .timeline-line::after {
+            content: '';
+            position: absolute;
+            right: 0;
+            top: -14px;
+            border-left: 30px solid rgba(255, 255, 255, 0.9);
+            border-top: 18px solid transparent;
+            border-bottom: 18px solid transparent;
+        }
+
+        /* 页码圆圈 */
+        .number-circle {
+            position: relative;
+            width: 70px;
+            height: 70px;
+            background-color: #f7f0d0;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 3vw;
+            font-family: 'Impact', sans-serif;
+            color: #111;
+            margin-left: 3%;
+            z-index: 2;
+        }
+
+        /* 底部手写体文字 */
+        .timeline-text {
+            position: absolute;
+            width: 100%;
+            text-align: center;
+            font-family: 'Brush Script MT', 'Dancing Script', cursive;
+            font-style: italic;
+            font-size: 2.2vw;
+            color: #fff;
+            z-index: 3;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.8);
+        }
+
+        /* ================= 移动端简易适配 ================= */
+        @media (max-width: 768px) {
+            .canvas { height: 100vh; }
+            .title-area { width: 90%; top: 5%; }
+            .title-block h1 { font-size: 32px; }
+            .subtitle { font-size: 14px; }
+            .main-card { 
+                top: 25%; left: 5%; right: 5%; padding: 60px 20px 20px 20px; 
+            }
+            .main-text { font-size: 14px; }
+            .avatar { top: 20%; left: 5%; width: 80px; border-width: 3px; }
+            .wavy-line-top, .wavy-line-left { display: none; } /* 手机端隐藏波浪线防杂乱 */
+            .pencil-icon { width: 60px; bottom: 15%; right: 5%; }
+            .number-circle { width: 40px; height: 40px; font-size: 20px; }
+            .timeline-text { font-size: 14px; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="canvas">
+        
+        <!-- 1. 左上角标题 -->
+        <div class="title-area">
+            <div class="title-block">
+                <h1>PERSONAL REFLECTION</h1>
+            </div>
+            <div class="subtitle">
+                What can this journey of "Race and Care" inspire us to do?
+            </div>
+        </div>
+
+        <!-- 2. 中间半透明大卡片 -->
+        <div class="main-card">
+            <!-- 装饰线 -->
+            <div class="wavy-line-top"></div>
+            <div class="wavy-line-left"></div>
+            
+            <!-- 文字内容 -->
+            <div class="main-text">
+                As an engineering student in an engineering program,<br>
+                I feel the weight of the future on my shoulders.<br>
+                Technology is advancing rapidly, and it is our<br>
+                responsibility to drive it forward. However, the true<br>
+                purpose of innovation is not just to accelerate the<br>
+                world, but to serve humanity with empathy and<br>
+                warmth. We must build a future where technology<br>
+                empowers everyone.
+            </div>
+        </div>
+
+        <!-- 3. 左侧头像 (使用了一个类似的手绘风格占位图) -->
+        <img class="avatar" src="https://api.dicebear.com/7.x/avataaars/svg?seed=Felix&backgroundColor=f0f0f0" alt="Avatar">
+        
+        <!-- 4. 左侧装饰圆点 -->
+        <div class="deco-dot"></div>
+
+        <!-- 5. 右下角铅笔 (使用了一个免费的卡通铅笔图片链接) -->
+        <img class="pencil-icon" src="https://cdn-icons-png.flaticon.com/512/1157/1157000.png" alt="Pencil">
+
+        <!-- 6. 底部时间轴 -->
+        <div class="timeline-bar">
+            <div class="timeline-line"></div>
+            <div class="number-circle">5</div>
+            <div class="timeline-text">The future belongs to us: it's our turn to race and care.</div>
+        </div>
+
+    </div>
+
+</body>
+</html>
