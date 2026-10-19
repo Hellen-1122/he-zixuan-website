@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Part 1 - 50 Years Transformation</title>
+    <style>
+        /* ================= 基础重置 ================= */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            /* 深色背景衬托主画布 */
+            background-color: #4a3c31; 
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            font-family: 'Georgia', serif;
+        }
+
+        /* ================= 主画布 ================= */
+        .canvas {
+            position: relative;
+            width: 100%;
+            max-width: 1400px;
+            height: 85vh;
+            max-height: 900px;
+            /* 提取原图的卡其底色 */
+            background-color: #d5b88f; 
+            overflow: hidden;
+            box-shadow: 0 15px 40px rgba(0,0,0,0.4);
+            
+            /* 用 CSS 渐变模拟原图背景隐约的网格/建筑线条 */
+            background-image: 
+                linear-gradient(rgba(255,255,255,0.05) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255,255,255,0.05) 1px, transparent 1px);
+            background-size: 50px 50px;
+        }
+
+        /* ================= 顶部标题栏 ================= */
+        .top-bar {
+            position: absolute;
+            top: 4%;
+            left: 0;
+            width: 100%;
+            height: 60px;
+            display: flex;
+            align-items: center;
+            z-index: 10;
+        }
+
+        /* 横线与箭头 */
+        .top-line {
+            position: absolute;
+            left: 5%;
+            right: 3%;
+            height: 6px;
+            background-color: #8f6734; /* 土黄色线 */
+            z-index: 1;
+        }
+        /* 用伪元素画右侧箭头 */
+        .top-line::after {
+            content: '';
+            position: absolute;
+            right: -15px;
+            top: -12px;
+            border-left: 20px solid #8f6734;
+            border-top: 15px solid transparent;
+            border-bottom: 15px solid transparent;
+        }
+              /* 页码圆圈 */
+        .number-circle {
+            position: relative;
+            width: 70px;
+            height: 70px;
+            background-color: #b8860b; /* 暗金色 */
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 2vw;
+            font-weight: bold;
+            color: #222;
+            margin-left: 4%;
+            z-index: 2;
+            border: 2px solid #5c3a21; /* 深色外圈 */
+        }
+
+        /* 顶部手写体文字 */
+        .top-text {
+            position: absolute;
+            width: 100%;
+            text-align: center;
+            font-family: 'Dancing Script', 'Brush Script MT', cursive;
+            font-style: italic;
+            font-size: 2.5vw;
+            color: #111;
+            z-index: 3;
+            pointer-events: none; /* 让鼠标可以点击穿透文字 */
+        }
+
+        /* ================= 装饰元素 (巨大的 RACE 水印) ================= */
+        .watermark-race {
+            position: absolute;
+            font-family: 'Impact', 'Arial Black', sans-serif;
+            color: rgba(0, 0, 0, 0.15); /* 半透明黑色 */
+            letter-spacing: 5px;
+            z-index: 1; /* 在最底层 */
+        }
+        .race-mid-right {
+            right: -2%;
+            top: 45%;
+            font-size: 7vw;
+        }
+        .race-bottom-left {
+            left: 30%;
+            bottom: 2%;
+            font-size: 8vw;
+        }
+              /* 中间的横向装饰粗线 */
+        .deco-line {
+            position: absolute;
+            right: 0;
+            width: 30%;
+            height: 30px;
+            background-color: rgba(143, 103, 52, 0.3);
+            z-index: 1;
+        }
+        .line-1 { top: 50%; }
+        .line-2 { top: 58%; }
+
+
+        /* ================= 双重边框图片容器通用类 ================= */
+        /* 外层深色，内层金色（利用 padding 实现） */
+        .double-border-img {
+            position: absolute;
+            background-color: #3e2713; /* 深棕色外边框 */
+            padding: 5px; /* 决定了金色边框的粗细 */
+            z-index: 5;
+        }
+        .double-border-img .inner-border {
+            border: 6px solid #b8860b; /* 金色内边框 */
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+        }
+        .double-border-img img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+        }
+
+
+        /* ================= 具体图片和文字卡片定位 ================= */
+        
+        /* 1. 左侧上方大图 (日出城市) */
+        .img-left-top {
+            top: 15%;
+            left: 0;
+            width: 50%;
+            height: 35%;
+        }
+
+        /* 2. 左侧下方文字 */
+        .text-left-bottom {
+            position: absolute;
+            top: 52%;
+            left: 2%;
+            width: 30%;
+            z-index: 5;
+            font-size: 1.6vw;
+            font-weight: bold;
+            color: #2b1b0f;
+            line-height: 1.4;
+        }
+
+        /* 3. 中间桥梁图 (压在左侧文字上方) */
+        .img-center {
+            top: 48%;
+            left: 33%;
+            width: 45%;
+            height: 42%;
+            z-index: 6; /* 层级高于左侧文字 */
+        }
+      
+        /* 4. 右上角文字卡片 */
+        .text-card-right {
+            position: absolute;
+            top: 18%;
+            right: 4%;
+            width: 40%;
+            background-color: #e5d5b7; /* 淡米黄 */
+            padding: 3vh 2vw;
+            z-index: 4;
+            font-size: 1.4vw;
+            font-weight: bold;
+            line-height: 2;
+            letter-spacing: 1px;
+            color: #222;
+        }
+        /* 用::before实现左侧的黑色方块项目符号 */
+        .text-card-right::before {
+            content: '';
+            position: absolute;
+            left: 2%;
+            top: 20%;
+            width: 10px;
+            height: 10px;
+            background-color: #000;
+            box-shadow: 0 30px 0 #000, 0 60px 0 #000, 0 90px 0 #000; /* 用阴影连续画出另外三个方块 */
+        }
+
+        /* 5. 右下角夜景建筑图 */
+        .img-right-bottom {
+            bottom: -2%; /* 故意超出底部一点 */
+            right: 0;
+            width: 35%;
+            height: 40%;
+            z-index: 3; /* 层级低于中间的桥梁图 */
+            border: none; /* 取消外层边框以贴合边缘效果 */
+            background: none;
+        }
+        .img-right-bottom img {
+            border: 3px solid #3e2713;
+        }
+
+
+        /* ================= 移动端简易适配 ================= */
+        @media (max-width: 768px) {
+            .canvas { height: 100vh; }
+            .number-circle { width: 40px; height: 40px; font-size: 20px; }
+            .top-text { font-size: 16px; margin-top: 10px; }
+            .text-left-bottom, .text-card-right { font-size: 12px; }
+            .race-mid-right, .race-bottom-left { display: none; } /* 手机端隐藏水印防拥挤 */
+            .double-border-img { padding: 3px; }
+            .double-border-img .inner-border { border-width: 3px; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="canvas">
+        <!-- === 背景装饰 === -->
+        <div class="watermark-race race-mid-right">RACE</div>
+        <div class="watermark-race race-bottom-left">RACE</div>
+        
+        <div class="deco-line line-1"></div>
+        <div class="deco-line line-2"></div>
+
+
+        <!-- === 顶部区域 === -->
+        <div class="top-bar">
+            <div class="top-line"></div>
+            <div class="number-circle">2</div>
+            <div class="top-text">However, 50 years went away, the city turn into ......</div>
+        </div>
+        
+        <!-- === 左侧大图 (日出城市) === -->
+        <div class="double-border-img img-left-top">
+            <div class="inner-border">
+                < img src="https://images.unsplash.com/photo-1514565131-fce0801e5785?q=80&w=1000&auto=format&fit=crop" alt="City Sunrise">
+            </div>
+        </div>
+
+
+        <!-- === 左侧下方文字 === -->
+        <div class="text-left-bottom">
+            In just 50 years, China has transformed from a backward agricultural nation into a global industrial powerhouse. This unprecedented leap is the very definition of our 'Race'.
+        </div>
+
+
+        <!-- === 中间桥梁图片 === -->
+        <div class="double-border-img img-center">
+            <div class="inner-border">
+                < img src="https://images.unsplash.com/photo-1506012787146-f92b2d7d6d96?q=80&w=1000&auto=format&fit=crop" alt="City Bridge">
+            </div>
+        </div>
+
+
+        <!-- === 右上文字卡片 === -->
+        <div class="text-card-right">
+            FROM MUDDY ROADS TO GLOWING SKYLINES, CHINA'S URBAN DEVELOPMENT IS A BREATHTAKING RACE AGAINST TIME.
+        </div>
+
+
+        <!-- === 右下夜景图 === -->
+        <div class="double-border-img img-right-bottom">
+            < img src="https://images.unsplash.com/photo-1519501025264-65ba15a82390?q=80&w=1000&auto=format&fit=crop" alt="Night City">
+        </div>
+
+    </div>
+
+</body>
+</html>
