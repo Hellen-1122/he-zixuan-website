@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Part 2 - Care</title>
+    <style>
+        /* ================= 基础重置 ================= */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background-color: #e5e5e5; /* 网页外围浅灰背景 */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            font-family: 'Georgia', serif;
+        }
+
+        /* ================= 主画布 ================= */
+        .canvas {
+            position: relative;
+            width: 100%;
+            max-width: 1400px;
+            height: 85vh;
+            max-height: 900px;
+            /* 使用浅黄色背景，如果想模拟原图的模糊照片底图，可以在这里加 background-image 并调低透明度 */
+            background-color: #fbf4d1; 
+            overflow: hidden; 
+            box-shadow: 0 15px 40px rgba(0,0,0,0.2);
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* ================= 顶部大标题区域 ================= */
+        .header-care {
+            position: relative;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 15%;
+            margin-top: 1%;
+            z-index: 5;
+        }
+
+        /* 用 CSS 画横穿顶部的虚线 */
+        .header-care::before {
+            content: '';
+            position: absolute;
+            width: 100%;
+            height: 8px;
+            /* 利用背景渐变生成方形虚线，比 dashed 属性更好看 */
+            background: linear-gradient(90deg, #7b4a21 50%, transparent 50%);
+            background-size: 30px 100%;
+            top: 50%;
+            transform: translateY(-50%);
+            z-index: 1;
+        }
+
+        .care-title-group {
+            position: relative;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            z-index: 2;
+        }
+
+        .care-title-group h1 {
+            font-family: 'Impact', 'Arial Black', sans-serif;
+            font-size: 5.5vw;
+            color: #7b4a21; /* 深棕色 */
+            letter-spacing: 5px;
+            /* 模仿原图厚重的投影 */
+            text-shadow: 4px 4px 0px #e8d5b5, 6px 6px 10px rgba(0,0,0,0.2);
+            margin: 0 20px;
+        }
+
+        /* 星星伪元素 */
+        .care-title-group .star {
+            color: #7b4a21;
+            font-size: 4vw;
+            text-shadow: 2px 2px 0px #e8d5b5;
+        }
+
+        /* ================= 核心内容区 (包含虚线边框) ================= */
+        .main-content {
+            position: relative;
+            flex-grow: 1;
+            margin: 0 3% 15% 3%; /* 底部留出空间给 timeline */
+            /* 画四周的绿色粗虚线 */
+            border: 8px dashed #6eb883;
+            display: flex;
+            flex-direction: column;
+            z-index: 2;
+        }
+
+        /* --- 上半部分 (重庆背篓图文) --- */
+        .row-top {
+            display: flex;
+            height: 50%;
+            background-color: rgba(247, 237, 203, 0.8); /* 半透明米黄色背景 */
+            padding: 2vh 4vw;
+            align-items: center;
+            gap: 3vw;
+        }
+
+        .row-top .img-box {
+            width: 35%;
+            border: 3px solid #333; /* 原图有黑色细边框 */
+            box-shadow: 2px 2px 10px rgba(0,0,0,0.2);
+            flex-shrink: 0;
+        }
+
+        .row-top .img-box img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+        }
+
+        .row-top .text-box {
+            width: 65%;
+            font-size: 2vw;
+            font-weight: bold;
+            line-height: 1.4;
+            color: #111;
+            font-family: 'Times New Roman', serif;
+        }
+
+        /* --- 下半部分 (农业技术图文) --- */
+        .row-bottom {
+            display: flex;
+            height: 50%;
+            background-color: rgba(220, 235, 215, 0.8); /* 半透明浅绿色背景 */
+            padding: 2vh 4vw;
+            align-items: center;
+            gap: 3vw;
+        }
+
+        .row-bottom .text-box {
+            width: 60%;
+            font-size: 2vw;
+            font-weight: bold;
+            line-height: 1.4;
+            color: #111;
+            font-family: 'Times New Roman', serif;
+        }
+
+        .row-bottom .img-box {
+            width: 40%;
+            border: 3px solid #333;
+            box-shadow: 2px 2px 10px rgba(0,0,0,0.2);
+            flex-shrink: 0;
+        }
+
+        .row-bottom .img-box img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+        }
+
+        /* ================= 底部时间轴栏 ================= */
+        .timeline-bar {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 12%;
+            display: flex;
+            align-items: center;
+            z-index: 5;
+        }
+
+        /* 贯穿的绿色粗线 */
+        .timeline-line {
+            position: absolute;
+            left: 4%;
+            right: 0;
+            height: 10px;
+            background-color: #6eb883;
+            z-index: 1;
+        }
+
+        /* 右侧箭头 */
+        .timeline-line::after {
+            content: '';
+            position: absolute;
+            right: 0;
+            top: -15px;
+            border-left: 30px solid #6eb883;
+            border-top: 20px solid transparent;
+            border-bottom: 20px solid transparent;
+        }
+
+        /* 页码圆圈 */
+        .number-circle {
+            position: relative;
+            width: 80px;
+            height: 80px;
+            background-color: #6eb883;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 3vw;
+            font-weight: bold;
+            color: #111;
+            margin-left: 2%;
+            z-index: 2;
+        }
+
+        /* 底部文字 */
+        .timeline-text {
+            position: absolute;
+            width: 100%;
+            text-align: center;
+            font-family: 'Brush Script MT', 'Dancing Script', cursive;
+            font-style: italic;
+            font-size: 2.2vw;
+            color: #222;
+            z-index: 3;
+            pointer-events: none;
+        }
+
+        /* ================= 移动端简易适配 ================= */
+        @media (max-width: 768px) {
+            .canvas { height: 100vh; }
+            .care-title-group h1 { font-size: 40px; margin: 0 10px; }
+            .care-title-group .star { font-size: 30px; }
+            .main-content { border-width: 4px; margin-bottom: 20%; }
+            .row-top, .row-bottom { flex-direction: column; padding: 10px; gap: 10px; }
+            .row-top .img-box, .row-bottom .img-box { width: 80%; }
+            .row-top .text-box, .row-bottom .text-box { width: 100%; font-size: 14px; }
+            .number-circle { width: 50px; height: 50px; font-size: 20px; }
+            .timeline-text { font-size: 14px; }
+            .timeline-line { height: 6px; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="canvas">
+        
+        <!-- 1. 顶部标题栏 -->
+        <div class="header-care">
+            <div class="care-title-group">
+                <span class="star">★</span>
+                <h1>CARE</h1>
+                <span class="star">★</span>
+            </div>
+        </div>
+
+        <!-- 2. 中间主体区域（包含大虚线框） -->
+        <div class="main-content">
+            
+            <!-- 上半部分：重庆背篓 -->
+            <div class="row-top">
+                <div class="img-box">
+                    <img src="https://images.unsplash.com/photo-1542838132-92c53300491e?q=80&w=800&auto=format&fit=crop" alt="Farmers Market">
+                </div>
+                <div class="text-box">
+                    Chongqing's "Basket Line" welcomes farmers carrying heavy loads. It proves that as the city races forward, human warmth is never left behind.
+                </div>
+            </div>
+
+            <!-- 下半部分：现代农业 -->
+            <div class="row-bottom">
+                <div class="text-box">
+                    technology is transforming agriculture. With modern harvesters, the backbreaking labor of the past is replaced by efficient machines- easing the burden on farmers and bringing warmth to the countryside.
+                </div>
+                <div class="img-box">
+                    <img src="https://images.unsplash.com/photo-1589923188900-85dae523342b?q=80&w=800&auto=format&fit=crop" alt="Modern Agriculture">
+                </div>
+            </div>
+
+        </div>
+
+        <!-- 3. 底部时间轴 -->
+        <div class="timeline-bar">
+            <div class="timeline-line"></div>
+            <div class="number-circle">3</div>
+            <div class="timeline-text">advancing technology, while ensuring it serves humanity with warmth.</div>
+        </div>
+
+    </div>
+
+</body>
+</html>
