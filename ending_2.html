@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Thank You</title>
+    <style>
+        /* ================= 基础重置 ================= */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background-color: #333;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            font-family: 'Arial', sans-serif;
+        }
+
+        /* ================= 主画布与背景 ================= */
+        .canvas {
+            position: relative;
+            width: 100%;
+            max-width: 1400px;
+            height: 85vh;
+            max-height: 900px;
+            /* 使用一张高铁与自然风光的 Unsplash 图作为背景 */
+            background-image: url('https://images.unsplash.com/photo-1541417904950-b855846fe074?q=80&w=2000&auto=format&fit=crop');
+            background-size: cover;
+            background-position: center;
+            overflow: hidden; 
+            box-shadow: 0 15px 40px rgba(0,0,0,0.5);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        /* 背景高光滤镜，让中间亮一点，边缘暗一点，突出主体 */
+        .canvas::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, rgba(0,0,0,0.4) 100%);
+            z-index: 1;
+        }
+
+        /* ================= 倾斜的半透明玻璃卡片 ================= */
+        .glass-card {
+            position: relative;
+            width: 75%;
+            height: 70%;
+            background-color: rgba(255, 255, 255, 0.6); /* 半透明白色 */
+            backdrop-filter: blur(8px); /* 毛玻璃模糊效果 */
+            border: 2px solid rgba(255, 255, 255, 0.8);
+            border-radius: 10px;
+            transform: rotate(-3deg); /* 核心：整体微倾斜 */
+            z-index: 2;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+        }
+
+        /* ================= 核心大字区域 ================= */
+        .title-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-bottom: 5vh;
+            /* 字体用最粗的无衬线体 */
+            font-family: 'Impact', 'Arial Black', sans-serif;
+            color: #e5c35c; /* 金色大字 */
+            line-height: 0.8;
+            letter-spacing: 5px;
+        }
+
+        /* 单个单词样式 */
+        .word {
+            font-size: 10vw;
+            /* 核心：利用多层文字阴影做出原图那种厚重的 3D 立体感 */
+            text-shadow: 
+                2px 2px 0 #b89d47,
+                4px 4px 0 #b89d47,
+                6px 6px 0 #b89d47,
+                8px 8px 0 #b89d47,
+                10px 10px 15px rgba(0,0,0,0.4);
+            z-index: 2;
+        }
+
+        /* 中间的竖线 */
+        .vertical-lines {
+            display: flex;
+            justify-content: center;
+            gap: 8vw; /* 控制线之间的间距 */
+            width: 100%;
+            margin: 1vh 0;
+            z-index: 1;
+        }
+
+        .v-line {
+            width: 10px;
+            height: 8vh;
+            background-color: #e5c35c;
+            box-shadow: 2px 2px 5px rgba(0,0,0,0.2);
+        }
+
+        /* ================= 底部说明文字 ================= */
+        .footer-text {
+            position: absolute;
+            bottom: 10%;
+            width: 80%;
+            text-align: center;
+            font-family: 'Arial Black', sans-serif;
+            font-size: 1.4vw;
+            font-weight: 900;
+            color: #000;
+            line-height: 1.5;
+            z-index: 5;
+        }
+
+        /* 黑色小圆点 */
+        .footer-text::before {
+            content: '●';
+            font-size: 1.5vw;
+            margin-right: 8px;
+            vertical-align: middle;
+        }
+
+        /* ================= 装饰胶带贴纸 ================= */
+        .tape {
+            position: absolute;
+            width: 20vw;
+            height: 50px;
+            background-color: rgba(240, 235, 200, 0.9); /* 淡黄色胶带 */
+            z-index: 3;
+            /* 用 clip-path 切出胶带两头锯齿状的效果 */
+            clip-path: polygon(5% 0, 95% 0, 100% 20%, 95% 40%, 100% 60%, 95% 80%, 100% 100%, 5% 100%, 0 80%, 5% 60%, 0 40%, 5% 20%);
+            box-shadow: 2px 2px 8px rgba(0,0,0,0.1);
+            /* 用虚线和背景色模拟胶带上的黄色方块 */
+            background-image: linear-gradient(90deg, transparent 50%, #cba845 50%);
+            background-size: 40px 10px;
+            background-position: center;
+            background-repeat: no-repeat;
+        }
+
+        /* 左上角胶带 */
+        .tape-top-left {
+            top: 2%;
+            left: -5%;
+            transform: rotate(-40deg);
+        }
+
+        /* 右下角胶带 */
+        .tape-bottom-right {
+            bottom: 2%;
+            right: -5%;
+            transform: rotate(-40deg);
+        }
+
+        /* ================= 移动端简易适配 ================= */
+        @media (max-width: 768px) {
+            .canvas { height: 100vh; }
+            .glass-card { width: 90%; height: 60%; transform: rotate(-2deg); }
+            .word { font-size: 60px; }
+            .v-line { height: 5vh; width: 6px; gap: 15vw; }
+            .footer-text { font-size: 12px; bottom: 12%; width: 90%; }
+            .footer-text::before { font-size: 12px; }
+            .tape { width: 120px; height: 30px; background-size: 20px 6px; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="canvas">
+        
+        <!-- 1. 主玻璃卡片 -->
+        <div class="glass-card">
+            
+            <!-- 大字标题容器 -->
+            <div class="title-container">
+                <div class="word">THANK</div>
+                
+                <!-- 中间的三根竖线 -->
+                <div class="vertical-lines">
+                    <div class="v-line"></div>
+                    <div class="v-line"></div>
+                    <div class="v-line"></div>
+                </div>
+                
+                <div class="word">YOU</div>
+            </div>
+
+            <!-- 底部说明文字 -->
+            <div class="footer-text">
+                The race for development never stops, but neither does our care. Thank you for joining me on this journey.
+            </div>
+
+        </div>
+
+        <!-- 2. 装饰胶带 -->
+        <div class="tape tape-top-left"></div>
+        <div class="tape tape-bottom-right"></div>
+
+    </div>
+
+</body>
+</html>
