@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Part 3 - CULTURE</title>
+    <style>
+        /* ================= 基础重置 ================= */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background-color: #e5e5e5; /* 网页外围浅灰背景 */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            font-family: 'Georgia', serif;
+        }
+
+        /* ================= 主画布 ================= */
+        .canvas {
+            position: relative;
+            width: 100%;
+            max-width: 1400px;
+            height: 85vh;
+            max-height: 900px;
+            background-color: #ffffff; /* 画布底色为纯白 */
+            overflow: hidden; 
+            box-shadow: 0 15px 40px rgba(0,0,0,0.1);
+        }
+
+        /* ================= 核心大图 ================= */
+        .hero-image {
+            position: absolute;
+            top: 10%;
+            left: 8%;
+            width: 85%;
+            height: 75%;
+            object-fit: cover;
+            z-index: 1; /* 底层图片 */
+            /* 加一点复古暖色调滤镜 */
+            filter: sepia(0.3) contrast(1.1) brightness(0.9);
+        }
+
+        /* ================= 左上角文字区域 ================= */
+        .text-card {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 50%;
+            height: 30%;
+            background-color: rgba(130, 115, 95, 0.9); /* 偏灰褐色的半透明背景 */
+            padding: 3vh 3vw;
+            z-index: 4; /* 层级较高，盖在图片上方 */
+        }
+
+        .text-card p {
+            /* 使用类似手写/斜体的字体，黄色字 */
+            font-family: 'Brush Script MT', 'Dancing Script', cursive, serif;
+            font-style: italic;
+            font-size: 1.6vw;
+            line-height: 1.5;
+            color: #ffda44; /* 亮黄色文字 */
+            letter-spacing: 0.5px;
+        }
+
+        /* ================= 装饰几何图形 ================= */
+        /* 右上角半透明圆 */
+        .circle-tr {
+            position: absolute;
+            top: 5%;
+            right: 5%;
+            width: 100px;
+            height: 100px;
+            background-color: #d8cfae; /* 淡卡其色 */
+            border-radius: 50%;
+            z-index: 3;
+        }
+
+        /* 左下角半透明圆 */
+        .circle-bl {
+            position: absolute;
+            bottom: 5%;
+            left: 4%;
+            width: 80px;
+            height: 80px;
+            background-color: #8e8171; /* 灰褐色 */
+            border-radius: 50%;
+            z-index: 3;
+        }
+
+        /* 右下角不规则半透明色块 */
+        .bottom-shape {
+            position: absolute;
+            bottom: 0;
+            right: 0;
+            width: 70%;
+            height: 30%;
+            background-color: rgba(185, 169, 145, 0.9); /* 卡其色/驼色 */
+            z-index: 2; /* 在图片之上，但在大字之下 */
+            /* 用 clip-path 切出斜角 */
+            clip-path: polygon(15% 0, 100% 0, 100% 100%, 0 100%);
+        }
+
+        /* ================= 右下角大标题区域 ================= */
+        .title-group {
+            position: absolute;
+            bottom: 2%;
+            right: 2%;
+            text-align: right;
+            z-index: 5; /* 最高层级，显示在最上面 */
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+        }
+
+        .part-title {
+            font-family: 'Impact', 'Arial Black', sans-serif;
+            font-size: 7vw;
+            color: #000;
+            letter-spacing: 2px;
+            line-height: 1;
+            position: relative;
+            /* PART 3 文字有白色的描边效果 */
+            text-shadow: 2px 2px 0px #fff, -2px -2px 0px #fff, 2px -2px 0px #fff, -2px 2px 0px #fff, 4px 4px 5px rgba(0,0,0,0.3);
+            margin-bottom: 1vh;
+        }
+
+        /* PART 3 左侧的小圆点 */
+        .part-title::before {
+            content: '';
+            position: absolute;
+            left: -60px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 45px;
+            height: 45px;
+            background-color: #7d6b53;
+            border-radius: 50%;
+            z-index: -1;
+        }
+
+        .main-title {
+            font-family: 'Times New Roman', serif;
+            font-weight: 900;
+            font-size: 10vw;
+            color: #000;
+            letter-spacing: -2px;
+            line-height: 0.8;
+            /* 让大字稍微有点透明，透出底下的色块 */
+            opacity: 0.9; 
+        }
+
+        /* ================= 移动端简易适配 ================= */
+        @media (max-width: 768px) {
+            .canvas { height: 100vh; }
+            .text-card { width: 90%; height: 35%; padding: 15px; background-color: rgba(130, 115, 95, 0.95); }
+            .text-card p { font-size: 12px; }
+            .hero-image { width: 95%; left: 2%; height: 65%; top: 20%; }
+            .bottom-shape { width: 100%; height: 25%; }
+            .part-title { font-size: 40px; }
+            .part-title::before { width: 20px; height: 20px; left: -25px; }
+            .main-title { font-size: 60px; }
+            .circle-tr, .circle-bl { width: 50px; height: 50px; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="canvas">
+        
+        <!-- 1. 核心大图 (古籍书库) -->
+        <img class="hero-image" src="https://images.unsplash.com/photo-1524995997946-a1c2e315a42f?q=80&w=2000&auto=format&fit=crop" alt="Ancient Books">
+
+        <!-- 2. 左上角文字 -->
+        <div class="text-card">
+            <p>Why can China balance rapid development with human care? The answer lies deep within its culture. Rooted in a tradition that values harmony and collective well-being, China's modernization is not just a race for speed, but a journey of warmth.</p>
+        </div>
+
+        <!-- 3. 装饰图形 -->
+        <div class="circle-tr"></div>
+        <div class="circle-bl"></div>
+        
+        <!-- 4. 右下角不规则背景色块 -->
+        <div class="bottom-shape"></div>
+
+        <!-- 5. 右下角文字 -->
+        <div class="title-group">
+            <div class="part-title">PART 3</div>
+            <div class="main-title">CULTURE</div>
+        </div>
+
+    </div>
+
+</body>
+</html>
