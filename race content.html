@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Part 1 - RACE</title>
+    <style>
+        /* 基础重置 */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background-color: #f0f0f0; /* 网页最外层灰色背景，衬托中间的白色画布 */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            font-family: 'Georgia', serif;
+        }
+
+        /* 核心画布：白底，设置相对定位，方便内部元素绝对定位 */
+        .canvas {
+            position: relative;
+            width: 100%;
+            max-width: 1200px; /* 限制最大宽度，保证在大屏上的阅读体验 */
+            height: 80vh; /* 高度占屏幕 80% */
+            max-height: 850px;
+            background-color: #ffffff;
+            overflow: hidden; /* 防止元素超出画布 */
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+
+        /* ----- 1. 主图设置 ----- */
+        .hero-image {
+            position: absolute;
+            /* 调整图片位置，让它偏左上，给右下角留出空间 */
+            top: 10%;
+            left: 5%;
+            width: 75%;
+            height: 75%;
+            object-fit: cover;
+            /* 稍微加一点点褪色/复古滤镜效果 */
+            filter: sepia(0.15) contrast(1.05) brightness(0.95);
+            z-index: 1;
+        }
+
+        /* ----- 2. 左上角文字毛玻璃卡片 ----- */
+        .text-card {
+            position: absolute;
+            top: 5%;
+            left: 2%;
+            width: 45%;
+            padding: 2vw 3vw;
+            background-color: rgba(245, 245, 240, 0.85); /* 半透明白色 */
+            backdrop-filter: blur(5px); /* 毛玻璃模糊效果 */
+            border-radius: 20px;
+            z-index: 3;
+            box-shadow: 2px 4px 15px rgba(0,0,0,0.05);
+        }
+
+        .text-card p {
+            font-size: 1.2vw;
+            color: #1a3a2a; /* 深墨绿色字体 */
+            font-style: italic;
+            line-height: 1.6;
+            letter-spacing: 0.5px;
+        }
+
+        /* 文字卡片里的小圆点装饰 */
+        .deco-dot-gray, .deco-dot-brown {
+            position: absolute;
+            border-radius: 50%;
+        }
+        .deco-dot-gray {
+            width: 40px; height: 40px;
+            background-color: #b0a59a;
+            right: 15%; bottom: 15%;
+        }
+        .deco-dot-brown {
+            width: 20px; height: 20px;
+            background-color: #8b5a2b;
+            left: 40%; bottom: 5%;
+        }
+
+        /* ----- 3. 右下角大标题区域 ----- */
+        /* 橙色多边形背景色块 */
+        .orange-bg {
+            position: absolute;
+            right: -10%; /* 故意超出边缘，产生切割感 */
+            bottom: -10%;
+            width: 60%;
+            height: 45%;
+            background-color: #d99842; /* 土橙色 */
+            /* 用 clip-path 切出一个类似梯形/多边形的角 */
+            clip-path: polygon(20% 0, 100% 0, 100% 100%, 0 100%);
+            z-index: 2;
+        }
+
+        /* PART 1 文字 */
+        .part-title {
+            position: absolute;
+            right: 8%;
+            bottom: 25%;
+            font-family: 'Impact', 'Arial Black', sans-serif; /* 极粗无衬线字体 */
+            font-size: 5vw;
+            color: #000000;
+            letter-spacing: 5px;
+            z-index: 4;
+            text-shadow: 2px 2px 0px #fff, -2px -2px 0px #fff, 2px -2px 0px #fff, -2px 2px 0px #fff; /* 白色描边效果 */
+        }
+
+        /* RACE 文字 */
+        .race-title {
+            position: absolute;
+            right: 5%;
+            bottom: 5%;
+            font-family: 'Impact', 'Arial Black', sans-serif;
+            font-size: 10vw; /* 字体非常大 */
+            color: #000000;
+            letter-spacing: 2px;
+            z-index: 5;
+            line-height: 0.8;
+            /* 黑色阴影 */
+            text-shadow: 4px 4px 10px rgba(0,0,0,0.3); 
+        }
+
+        /* PART 1 旁边的小圆点 */
+        .title-dot {
+            position: absolute;
+            right: 28%;
+            bottom: 32%;
+            width: 50px; height: 50px;
+            background-color: #d99842;
+            border-radius: 50%;
+            z-index: 4;
+        }
+
+        /* ----- 4. 散落的装饰圆 ----- */
+        .circle-tr {
+            position: absolute;
+            top: 3%;
+            right: 2%;
+            width: 80px; height: 80px;
+            background-color: #eac99d; /* 浅肉色 */
+            border-radius: 50%;
+            z-index: 2;
+        }
+
+        .circle-bl {
+            position: absolute;
+            bottom: 2%;
+            left: 2%;
+            width: 70px; height: 70px;
+            background-color: #a56a1d; /* 深棕橙色 */
+            border-radius: 50%;
+            z-index: 2;
+        }
+
+
+        /* ----- 简易移动端适配 ----- */
+        @media (max-width: 768px) {
+            .canvas { height: 100vh; }
+            .text-card { width: 80%; top: 5%; left: 5%; padding: 15px; }
+            .text-card p { font-size: 12px; }
+            .hero-image { width: 90%; height: 60%; top: 25%; left: 5%; }
+            .part-title { font-size: 40px; bottom: 20%; }
+            .race-title { font-size: 80px; }
+            .orange-bg { width: 80%; height: 30%; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- 白色大画布 -->
+    <div class="canvas">
+        
+        <!-- 主图（使用了一张 Unsplash 的高铁图） -->
+        < img class="hero-image" src="https://images.unsplash.com/photo-1541417904950-b855846fe074?q=80&w=2000&auto=format&fit=crop" alt="High Speed Train">
+
+        <!-- 左上角文字卡片 -->
+        <div class="text-card">
+            <p>Over the past 50 years, China has undergone an unprecedented urban transformation. From empty fields to towering skylines, the nation has set a breathtaking pace, officially starting a remarkable race of modernization.</p >
+            <!-- 卡片内的小圆点 -->
+            <div class="deco-dot-gray"></div>
+            <div class="deco-dot-brown"></div>
+        </div>
+
+        <!-- 右下角橙色背景底块 -->
+        <div class="orange-bg"></div>
+
+        <!-- 右下角文字 -->
+        <div class="part-title">PART 1</div>
+        <div class="title-dot"></div>
+        <div class="race-title">RACE</div>
+
+        <!-- 边角装饰圆 -->
+        <div class="circle-tr"></div>
+        <div class="circle-bl"></div>
+
+    </div>
+
+</body>
+</html>
