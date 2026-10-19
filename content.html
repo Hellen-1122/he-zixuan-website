@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>China's Development - Content</title>
+    <style>
+        /* 基础重置 */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body, html {
+            width: 100%;
+            height: 100vh;
+            overflow: hidden; /* 防止出现滚动条 */
+            background-color: #d4af37; /* 备用背景色 */
+            font-family: 'Georgia', serif; /* 原图有复古感，用衬线体 */
+        }
+
+        /* 主容器与背景 */
+        .container {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            /* 使用一张金黄色的 Unsplash 麦田/日落背景代替 */
+            background-image: url('https://images.unsplash.com/photo-1500382017468-9049fed747ef?q=80&w=2500&auto=format&fit=crop');
+            background-size: cover;
+            background-position: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* 淡金色遮罩，让背景变柔和，文字更清晰 */
+        .container::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(255, 215, 0, 0.3); 
+            backdrop-filter: blur(3px); /* 模糊背景 */
+            z-index: 1;
+        }
+             /* 所有内容层级高于遮罩 */
+        .content-layer {
+            position: relative;
+            z-index: 2;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: space-around;
+            padding: 3vh 0;
+        }
+
+        /* 顶部 CONTENT 横幅 */
+        .top-banner {
+            position: relative;
+            background-color: rgba(218, 165, 32, 0.6); /* 半透明金色 */
+            padding: 1.5vh 8vw;
+            border-radius: 5px;
+            /* 用 clip-path 切出两端尖尖的标签形状 */
+            clip-path: polygon(5% 0, 95% 0, 100% 50%, 95% 100%, 5% 100%, 0% 50%);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            display: flex;
+            align-items: center;
+        }
+
+        .top-banner h1 {
+            font-size: 4vw;
+            color: #5C3A21; /* 深棕色 */
+            letter-spacing: 5px;
+            text-shadow: 2px 2px 4px rgba(255,255,255,0.5);
+        }
+
+        /* 中间四个面板（屏风效果） */
+        .panels-wrapper {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 90%;
+            height: 60vh;
+            perspective: 1200px; /* 开启 3D 透视 */
+        }
+
+        .panel {
+            flex: 1;
+            height: 100%;
+            background: rgba(230, 190, 100, 0.4); /* 半透明面板背景 */
+            border: 1px solid rgba(255,255,255,0.4);
+            border-right: 2px solid rgba(0,0,0,0.1); /* 模拟折痕阴影 */
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 2vh 1vw;
+            transition: all 0.3s ease;
+        }
+
+        /* 用 transform 制造左右折叠的透视效果 */
+        .panel-left-outer { transform: rotateY(15deg); box-shadow: -5px 0 15px rgba(0,0,0,0.1); }
+        .panel-left-inner { transform: rotateY(-5deg); }
+        .panel-right-inner { transform: rotateY(5deg); }
+        .panel-right-outer { transform: rotateY(-15deg); box-shadow: 5px 0 15px rgba(0,0,0,0.1); }
+              /* 顶部 PART 标题 */
+        .part-title {
+            font-size: 2vw;
+            font-weight: bold;
+            color: #111;
+            margin-top: 2vh;
+            margin-bottom: 4vh;
+            transform: rotate(-5deg); /* 微微倾斜 */
+        }
+        
+        .part-title span {
+            color: #b8860b; /* 星星颜色 */
+            margin-right: 5px;
+        }
+
+        /* 中间倾斜的色块 */
+        .color-block {
+            width: 85%;
+            height: 25vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 15px; /* 圆角 */
+            transform: rotate(-12deg); /* 倾斜 */
+            box-shadow: 5px 5px 0px rgba(0,0,0,0.2); /* 硬阴影 */
+            margin-bottom: 4vh;
+        }
+
+        .color-block h2 {
+            font-family: 'Impact', 'Arial Black', sans-serif; /* 粗黑体 */
+            font-size: 4vw;
+            color: #000;
+            line-height: 0.9;
+            text-align: center;
+        }
+
+        /* 黄底与土黄底交替 */
+        .bg-yellow { background-color: #FFC000; }
+        .bg-tan { background-color: #D29941; }
+
+        /* 底部手写体小字 */
+        .desc {
+            font-family: 'Dancing Script', cursive, serif;
+            font-style: italic;
+            font-size: 1.3vw;
+            color: #222;
+            text-align: center;
+            line-height: 1.5;
+            margin-top: auto;
+            margin-bottom: 2vh;
+        }
+
+        /* 底部居中的寄语 */
+        .footer-text {
+            font-family: 'Dancing Script', cursive, serif;
+            font-style: italic;
+            font-size: 1.4vw;
+            color: #111;
+            text-align: center;
+            text-shadow: 1px 1px 2px rgba(255,255,255,0.8);
+            line-height: 1.5;
+        }
+              /* 简单的响应式适配，防止在手机屏幕上挤爆 */
+        @media (max-width: 900px) {
+            .panels-wrapper { width: 100%; perspective: none; }
+            .panel { transform: none !important; } /* 小屏幕取消 3D 效果 */
+            .part-title { font-size: 14px; }
+            .color-block { height: 15vh; border-radius: 5px; }
+            .color-block h2 { font-size: 24px; }
+            .desc { font-size: 12px; }
+            .footer-text { font-size: 12px; padding: 0 10px; }
+            .top-banner h1 { font-size: 24px; padding: 5px 20px; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <div class="content-layer">
+            
+            <!-- 顶部横幅 -->
+            <div class="top-banner">
+                <h1>• CONTENT •</h1>
+            </div>
+
+            <!-- 中间四扇屏风 -->
+            <div class="panels-wrapper">
+                
+                <!-- PART I -->
+                <div class="panel panel-left-outer">
+                    <div class="part-title"><span>★</span> PART I</div>
+                    <div class="color-block bg-yellow">
+                        <h2>RACE</h2>
+                    </div>
+                    <div class="desc">
+                        a race that accelerated<br>everyday life
+                    </div>
+                </div>
+
+                <!-- PART II -->
+                <div class="panel panel-left-inner">
+                    <div class="part-title"><span>★</span> PART II</div>
+                    <div class="color-block bg-tan">
+                        <h2>CARE</h2>
+                    </div>
+                    <div class="desc">
+                        a care that ensured no<br>one was left behind
+                    </div>
+                </div>
+
+                <!-- PART III -->
+                <div class="panel panel-right-inner">
+                    <div class="part-title"><span>★</span> PART III</div>
+                    <div class="color-block bg-yellow">
+                        <h2>CUL<br>TURE</h2>
+                    </div>
+                    <div class="desc">
+                        a culture that weaves tradition<br>into modern life
+                    </div>
+                </div>
+
+                <!-- PART IV -->
+                <div class="panel panel-right-outer">
+                    <div class="part-title"><span>★</span> PART IV</div>
+                    <div class="color-block bg-tan">
+                        <h2>END<br>ING</h2>
+                    </div>
+                    <div class="desc">
+                        finally, we'll discuss it...
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- 底部文字 -->
+            <div class="footer-text">
+                A journey of rapid growth and human care awaits.<br>
+                Let's begin this extraordinary exploration.
+            </div>
+
+        </div>
+    </div>
+
+</body>
+</html>
