@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Part 1 - About 50 Years Before</title>
+    <style>
+        /* 基础重置 */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background-color: #a8a39a; /* 网页最外层深色背景 */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            font-family: 'Georgia', serif;
+        }
+
+        /* 核心画布 */
+        .canvas {
+            position: relative;
+            width: 100%;
+            max-width: 1200px;
+            height: 80vh;
+            max-height: 800px;
+            background-color: #d2cfc7; /* 原图的卡其色背景 */
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* ----- 1. 顶部 RACE 标题区域 ----- */
+        .header-race {
+            position: relative;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 10%;
+            margin-top: 2%;
+        }
+
+        /* 贯穿的黑线 */
+        .header-race::before {
+            content: '';
+            position: absolute;
+            width: 100%;
+            height: 8px;
+            background-color: #000;
+            top: 50%;
+            transform: translateY(-50%);
+            z-index: 1;
+        }
+
+        .race-text-box {
+            position: relative;
+            background-color: #333;
+            color: #fff;
+            font-family: 'Impact', 'Arial Black', sans-serif;
+            font-size: 3vw;
+            padding: 0 4vw;
+            border-radius: 30px; /* 胶囊形状 */
+            letter-spacing: 3px;
+            z-index: 2; /* 浮在黑线上面 */
+            display: flex;
+            align-items: center;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+        }
+              /* RACE 两侧的黑圆点 */
+        .race-text-box::before, .race-text-box::after {
+            content: '';
+            position: absolute;
+            width: 30px;
+            height: 30px;
+            background-color: #222;
+            border-radius: 50%;
+        }
+        .race-text-box::before { left: 10px; }
+        .race-text-box::after { right: 10px; }
+
+        /* ----- 2. 主标题 About 50 years... ----- */
+        .main-title-area {
+            padding: 1vh 5vw;
+            position: relative;
+        }
+
+        .main-title-area h1 {
+            font-size: 4vw;
+            color: #000;
+            font-family: 'Georgia', serif;
+            /* 模拟原图那种厚重的白色描边和立体阴影 */
+            text-shadow: 2px 2px 0px #fff, 4px 4px 5px rgba(0,0,0,0.2);
+        }
+
+        /* 左侧的灰色装饰小圆 */
+        .dot-deco {
+            position: absolute;
+            left: 2%;
+            top: 30%;
+            width: 30px;
+            height: 30px;
+            background-color: #999;
+            border-radius: 50%;
+        }
+
+        /* ----- 3. 文字内容区及左右箭头 ----- */
+        .content-section {
+            position: relative;
+            margin: 1vh 5vw;
+            display: flex;
+            justify-content: center;
+        }
+
+        /* 文本卡片 */
+        .text-card {
+            width: 85%;
+            background-color: #e6e6e6; /* 浅灰背景 */
+            padding: 2vw 3vw;
+            box-shadow: 2px 2px 10px rgba(0,0,0,0.1);
+            font-weight: bold;
+            font-size: 1.4vw;
+            line-height: 1.5;
+            color: #111;
+            z-index: 2;
+        }
+
+        .text-card p {
+            margin-bottom: 15px;
+        }
+        
+        .text-card p:last-child {
+            margin-bottom: 0;
+        }
+
+        /* 左右两侧的灰色向下箭头 */
+        .arrow {
+            position: absolute;
+            width: 10px;
+            background-color: #999;
+            height: 80%;
+            top: -10%;
+            z-index: 1;
+        }
+
+        /* 用 CSS 画出向下的三角形 */
+        .arrow::after {
+            content: '';
+            position: absolute;
+            bottom: -25px;
+            left: 50%;
+            transform: translateX(-50%);
+            border-left: 20px solid transparent;
+            border-right: 20px solid transparent;
+            border-top: 25px solid #999; /* 箭头颜色 */
+        }
+
+        .arrow-left { left: 2%; }
+        .arrow-right { right: 2%; }
+
+        /* ----- 4. 底部图片组 ----- */
+        .image-gallery {
+            display: flex;
+            width: 100%;
+            height: 35%; /* 高度占比 */
+            margin-top: auto; /* 顶到底部 */
+            border-top: 3px solid #555; /* 图片上方的一条深色线 */
+        }
+
+        .image-gallery img {
+            flex: 1; /* 三张图平分宽度 */
+            width: 33.33%;
+            height: 100%;
+            object-fit: cover; /* 保证图片不变形 */
+            filter: grayscale(80%) sepia(20%); /* 转为偏复古的黑白/棕褐色调 */
+            border-right: 2px solid #aaa; /* 图片之间的分割线 */
+        }
+        
+        .image-gallery img:last-child {
+            border-right: none;
+        }
+
+        /* ----- 5. 底部引导线及文字 ----- */
+        .footer-area {
+            height: 10%;
+            display: flex;
+            align-items: center;
+            padding: 0 5vw;
+            position: relative;
+            background-color: #d2cfc7;
+        }
+
+        /* 带有数字 1 的深色圆圈 */
+        .number-circle {
+            width: 50px;
+            height: 50px;
+            background-color: #777;
+            color: #fff;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 1.5vw;
+            font-family: 'Georgia', serif;
+            z-index: 2;
+            box-shadow: inset 0 0 5px rgba(0,0,0,0.5);
+        }      
+     /* 贯穿底部的灰色箭头线 */
+        .footer-line {
+            flex-grow: 1;
+            height: 6px;
+            background-color: #888;
+            margin-left: 10px;
+            position: relative;
+            display: flex;
+            align-items: center;
+        }
+
+        /* 底部的文字 */
+        .footer-text {
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+            font-family: 'Dancing Script', cursive, serif;
+            font-style: italic;
+            font-size: 2vw;
+            color: #111;
+            white-space: nowrap;
+            text-shadow: 1px 1px 2px rgba(255,255,255,0.8);
+        }
+
+        /* 箭头线的三角形头 */
+        .footer-line::after {
+            content: '';
+            position: absolute;
+            right: 0;
+            border-top: 15px solid transparent;
+            border-bottom: 15px solid transparent;
+            border-left: 25px solid #888;
+        }
+
+        /* ----- 简易移动端适配 ----- */
+        @media (max-width: 768px) {
+            .canvas { height: 100vh; }
+            .race-text-box { font-size: 24px; }
+            .race-text-box::before, .race-text-box::after { width: 15px; height: 15px; }
+            .main-title-area h1 { font-size: 32px; }
+            .text-card { font-size: 12px; width: 100%; }
+            .arrow { display: none; } /* 手机端隐藏箭头防止错位 */
+            .footer-text { font-size: 14px; }
+            .number-circle { width: 30px; height: 30px; font-size: 14px; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- 主画布 -->
+    <div class="canvas">
+        
+        <!-- 顶部 RACE 标题 -->
+        <div class="header-race">
+            <div class="race-text-box">
+                RACE
+            </div>
+        </div>
+
+        <!-- 主标题 -->
+        <div class="main-title-area">
+            <div class="dot-deco"></div>
+            <h1>About 50 years before ... ...</h1>
+        </div>
+
+        <!-- 中间文字与箭头 -->
+        <div class="content-section">
+            <div class="arrow arrow-left"></div>
+            
+            <div class="text-card">
+                <p>Fifty years ago: a blank slate. No skyscrapers, no high-speed trains. It was a difficult starting line, but the beginning of an incredible journey.</p >
+                <p>It was a difficult starting line, but the beginning of an incredible journey. From this humble start, a remarkable race began. Over the decades, that blank slate was rewritten into a landscape of miracles.</p >
+            </div>
+
+            <div class="arrow arrow-right"></div>
+        </div>
+        
+        <!-- 底部图片组 -->
+        <div class="image-gallery">
+            <!-- 寻找的三张复古/基建风格 Unsplash 图片 -->
+            < img src="https://images.unsplash.com/photo-1581092160562-40aa08e78837?q=80&w=600&auto=format&fit=crop" alt="Old Construction">
+            < img src="https://images.unsplash.com/photo-1469854523086-cc02fe5d8800?q=80&w=600&auto=format&fit=crop" alt="Old Landscape">
+            < img src="https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?q=80&w=600&auto=format&fit=crop" alt="Old Buildings">
+        </div>
+
+        <!-- 底部页码和文字 -->
+        <div class="footer-area">
+            <div class="number-circle">1</div>
+            <div class="footer-line">
+                <div class="footer-text">Fast forward 50 years. Let's witness a nation transformed...</div>
+            </div>
+        </div>
+
+    </div>
+
+</body>
+</html>
