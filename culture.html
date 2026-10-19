@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Part 3 - Culture</title>
+    <style>
+        /* ================= 基础重置 ================= */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background-color: #222; /* 外层深色背景，凸显内部 */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            font-family: 'Georgia', serif;
+        }
+
+        /* ================= 主画布 ================= */
+        .canvas {
+            position: relative;
+            width: 100%;
+            max-width: 1400px;
+            height: 85vh;
+            max-height: 900px;
+            /* 使用一张类似古籍/暖色调书架的图片作为背景 */
+            background-image: url('https://images.unsplash.com/photo-1524995997946-a1c2e315a42f?q=80&w=2000&auto=format&fit=crop');
+            background-size: cover;
+            background-position: center;
+            overflow: hidden; 
+            box-shadow: 0 15px 40px rgba(0,0,0,0.3);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        /* 背景暗色遮罩，让文字更清晰 */
+        .canvas::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background-color: rgba(0, 0, 0, 0.4);
+            z-index: 1;
+        }
+
+        /* ================= 顶部标题区域 ================= */
+        .header-area {
+            position: relative;
+            z-index: 5;
+            width: 100%;
+            margin-top: 2vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        /* 标题行：包含虚线、圆圈和文字 */
+        .title-row {
+            display: flex;
+            align-items: center;
+            width: 90%;
+            margin-bottom: 2vh;
+        }
+
+        /* 左右两侧的方形虚线 */
+        .dash-line {
+            flex-grow: 1;
+            height: 6px;
+            /* 利用线性渐变生成方形虚线 */
+            background: linear-gradient(90deg, #3d2314 50%, transparent 50%);
+            background-size: 25px 100%;
+        }
+
+        /* 标题文字 */
+        .title-main {
+            font-family: 'Impact', 'Arial Black', sans-serif;
+            font-size: 5.5vw;
+            color: #3d2314;
+            letter-spacing: 2px;
+            margin: 0 20px;
+            /* 模拟原图那种厚厚的白色/浅色描边 */
+            text-shadow: 
+                -3px -3px 0 #e8d8c8, 3px -3px 0 #e8d8c8, 
+                -3px 3px 0 #e8d8c8, 3px 3px 0 #e8d8c8,
+                5px 5px 10px rgba(0,0,0,0.5);
+            position: relative;
+        }
+
+        /* 标题两侧的圆圈 o */
+        .title-main::before, .title-main::after {
+            content: 'o';
+            font-family: 'Arial Black', sans-serif;
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 3vw;
+            color: #3d2314;
+            text-shadow: 2px 2px 0 #e8d8c8;
+        }
+        .title-main::before { left: -50px; }
+        .title-main::after { right: -50px; }
+
+        /* 副标题胶囊 */
+        .subtitle-pill {
+            background-color: rgba(212, 140, 70, 0.85); /* 半透明橙色 */
+            padding: 1vh 3vw;
+            border-radius: 50px;
+            font-size: 1.6vw;
+            color: #111;
+            font-weight: bold;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+        }
+
+        /* ================= 书本区域 ================= */
+        .book-container {
+            position: relative;
+            z-index: 5;
+            width: 85%;
+            height: 60%;
+            margin-top: 3vh;
+            display: flex;
+            box-shadow: 0 15px 30px rgba(0,0,0,0.4);
+        }
+
+        /* 书页通用样式 */
+        .book-page {
+            flex: 1;
+            background-color: rgba(240, 220, 200, 0.8); /* 半透明纸张质感 */
+            /* 使用 backdrop-filter 增加毛玻璃效果 */
+            backdrop-filter: blur(4px); 
+            padding: 4vh 3vw;
+            position: relative;
+        }
+
+        /* 左页：左侧圆角，右侧直角；利用 border-bottom 模拟下边缘弧度 */
+        .page-left {
+            border-radius: 20px 0 0 20px;
+            border-bottom-left-radius: 40px;
+            border-right: 3px dashed #3d2314; /* 书缝虚线 */
+        }
+
+        /* 右页：右侧圆角，左侧直角 */
+        .page-right {
+            border-radius: 0 20px 20px 0;
+            border-bottom-right-radius: 40px;
+        }
+
+        /* 书页内容样式 */
+        .book-page p {
+            font-family: 'Brush Script MT', 'Dancing Script', cursive;
+            font-style: italic;
+            font-size: 1.6vw;
+            color: #111;
+            line-height: 1.5;
+            margin-bottom: 15px;
+            /* 加上小圆点项目符号 */
+            padding-left: 25px;
+            position: relative;
+            text-align: justify;
+        }
+
+        /* 自定义大黑点 */
+        .book-page p::before {
+            content: '●';
+            position: absolute;
+            left: 0;
+            top: 2px;
+            font-size: 1.2vw;
+            color: #000;
+        }
+
+        /* 右下角装饰黑圆 */
+        .deco-circle {
+            position: absolute;
+            bottom: 20px;
+            right: 20px;
+            width: 40px;
+            height: 40px;
+            background-color: #3d2314;
+            border-radius: 50%;
+        }
+
+        /* ================= 底部时间轴栏 ================= */
+        .timeline-bar {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 10%;
+            display: flex;
+            align-items: center;
+            z-index: 5;
+        }
+
+        /* 底部黑线 */
+        .timeline-line {
+            position: absolute;
+            left: 5%;
+            right: 0;
+            height: 6px;
+            background-color: #3d2314;
+            z-index: 1;
+        }
+
+        /* 箭头 */
+        .timeline-line::after {
+            content: '';
+            position: absolute;
+            right: 0;
+            top: -12px;
+            border-left: 25px solid #3d2314;
+            border-top: 15px solid transparent;
+            border-bottom: 15px solid transparent;
+        }
+
+        /* 页码圆圈 */
+        .number-circle {
+            position: relative;
+            width: 70px;
+            height: 70px;
+            background-color: #3d2314;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 2.5vw;
+            color: #fff;
+            margin-left: 3%;
+            z-index: 2;
+            border: 3px solid #a8836d;
+        }
+
+        /* 底部文字 */
+        .timeline-text {
+            position: absolute;
+            width: 100%;
+            text-align: center;
+            font-family: 'Brush Script MT', 'Dancing Script', cursive;
+            font-style: italic;
+            font-size: 2vw;
+            color: #e8d8c8;
+            z-index: 3;
+            text-shadow: 1px 1px 3px rgba(0,0,0,0.8);
+        }
+
+        /* ================= 移动端简易适配 ================= */
+        @media (max-width: 768px) {
+            .canvas { height: 100vh; }
+            .title-main { font-size: 40px; }
+            .title-main::before, .title-main::after { font-size: 24px; left: -30px; right: -30px; }
+            .subtitle-pill { font-size: 12px; padding: 8px 15px; text-align: center; }
+            .book-container { width: 95%; flex-direction: column; height: auto; overflow-y: auto; }
+            .book-page { padding: 20px; border: none; border-radius: 0; }
+            .page-left { border-bottom: 3px dashed #3d2314; border-radius: 10px 10px 0 0;}
+            .page-right { border-radius: 0 0 10px 10px; }
+            .book-page p { font-size: 14px; padding-left: 15px; }
+            .book-page p::before { font-size: 12px; }
+            .number-circle { width: 40px; height: 40px; font-size: 18px; }
+            .timeline-text { font-size: 14px; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="canvas">
+        
+        <!-- 1. 顶部标题栏 -->
+        <div class="header-area">
+            <div class="title-row">
+                <div class="dash-line"></div>
+                <h1 class="title-main">CULTURE</h1>
+                <div class="dash-line"></div>
+            </div>
+            <div class="subtitle-pill">
+                so, why can a nation race forward so fast without leaving its people behind?
+            </div>
+        </div>
+
+        <!-- 2. 书本主体区域 -->
+        <div class="book-container">
+            <!-- 左页 -->
+            <div class="book-page page-left">
+                <p>It is a culture rooted in thousands of years of wisdom, one that prioritizes collective well-being over individual gain. Deeply influenced by Confucian values of 'benevolence' and 'harmony', Chinese culture believes that true prosperity is not measured by the height of the tallest skyscraper, but by the dignity of the most vulnerable citizen.</p>
+            </div>
+            
+            <!-- 右页 -->
+            <div class="book-page page-right">
+                <p>This cultural DNA shapes modern China. It explains why a high-speed metro still makes room for a farmer's heavy basket, and why technological progress is always paired with human empathy.</p>
+                <p>In this culture, speed is a tool for national strength, but care is the ultimate purpose.</p>
+                <!-- 装饰黑圆 -->
+                <div class="deco-circle"></div>
+            </div>
+        </div>
+
+        <!-- 3. 底部时间轴 -->
+        <div class="timeline-bar">
+            <div class="timeline-line"></div>
+            <div class="number-circle">4</div>
+            <div class="timeline-text">Culture shapes how a nation races, and how it cares.</div>
+        </div>
+
+    </div>
+
+</body>
+</html>
